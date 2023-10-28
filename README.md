@@ -3,7 +3,7 @@
 ## Description
 
 This Genero BDL demo illustrates how to use the MENU dialog instruction to 
-displat a list of choices only known at runtime.
+display a list of options defined at runtime.
 
 ![Screenshot 1](docs/screen-001.png)
 
