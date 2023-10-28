@@ -10,9 +10,9 @@ PUBLIC TYPE t_dynmenu_option_set DYNAMIC ARRAY OF t_dynmenu_option
 
 PRIVATE CONSTANT max_options = 20
 
-CONSTANT nn = "\n\n\n\n"
+PRIVATE CONSTANT nn = "\n\n\n\n"
 
-FUNCTION dynmenu(
+PUBLIC FUNCTION dynmenu(
     title STRING,
     options t_dynmenu_option_set
 ) RETURNS INTEGER
@@ -81,6 +81,12 @@ FUNCTION dynmenu(
     RETURN x
 END FUNCTION
 
+PRIVATE FUNCTION testme(title STRING, options t_dynmenu_option_set)
+    DEFINE x INTEGER
+    LET x = dynmenu(title,options)
+    ERROR SFMT("Selected option: %1",x)
+END FUNCTION
+
 FUNCTION main()
     DEFINE x INTEGER
     DEFINE options_1 t_dynmenu_option_set = [
@@ -109,25 +115,21 @@ FUNCTION main()
 
     MENU "Test"
         COMMAND "Test1"
-           LET x = dynmenu("Test 1",options_1)
-           ERROR SFMT("Selected option: %1",x)
+           CALL testme("Test 1",options_1)
         COMMAND "Test2"
            CALL options_1.copyTo(tmp)
            FOR x=1 TO 3
                CALL tmp.deleteElement(2)
            END FOR
-           LET x = dynmenu("Test 2",tmp)
-           ERROR SFMT("Selected option: %1",x)
+           CALL testme("Test 2",tmp)
         COMMAND "Test3"
            CALL options_1.copyTo(tmp)
            FOR x=1 TO 7
                CALL tmp.deleteElement(2)
            END FOR
-           LET x = dynmenu("Test 3",tmp)
-           ERROR SFMT("Selected option: %1",x)
+           CALL testme("Test 3",tmp)
         COMMAND "Test4"
-           LET x = dynmenu("Test 4",options_2)
-           ERROR SFMT("Selected option: %1",x)
+           CALL testme("Test 4",options_2)
         COMMAND "Exit"
            EXIT MENU
     END MENU
