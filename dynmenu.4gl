@@ -1,9 +1,9 @@
 
 PUBLIC TYPE t_dynmenu_option RECORD
-       name STRING,
-       text STRING,
-       icon STRING,
-       style STRING
+       oname STRING,
+       otext STRING,
+       oicon STRING,
+       ostyle STRING
      END RECORD
 
 PUBLIC TYPE t_dynmenu_option_set DYNAMIC ARRAY OF t_dynmenu_option
@@ -13,8 +13,8 @@ PRIVATE CONSTANT max_options = 20
 PRIVATE CONSTANT nn = "\n\n\n\n"
 
 PUBLIC FUNCTION dynmenu(
-    title STRING,
-    options t_dynmenu_option_set
+    mtit STRING,
+    opts t_dynmenu_option_set
 ) RETURNS INTEGER
     DEFINE x, ml INTEGER
     DEFINE actname, tmp, fn STRING
@@ -24,7 +24,7 @@ PUBLIC FUNCTION dynmenu(
        LET fn = "dynmenuf3"
     END IF
     OPEN WINDOW w_dynmenu WITH FORM fn
-         ATTRIBUTES(TEXT=title, STYLE="normal")
+         ATTRIBUTES(TEXT=mtit, STYLE="normal")
     MENU ""
         ON ACTION option1 LET x=1 EXIT MENU
         ON ACTION option2 LET x=2 EXIT MENU
@@ -47,14 +47,14 @@ PUBLIC FUNCTION dynmenu(
         ON ACTION option19 LET x=19 EXIT MENU
         ON ACTION option20 LET x=20 EXIT MENU
         BEFORE MENU
-            FOR x = 1 TO options.getLength()
-                IF options[x].text.getLength() > ml THEN
-                   LET ml = options[x].text.getLength()
+            FOR x = 1 TO opts.getLength()
+                IF opts[x].otext.getLength() > ml THEN
+                   LET ml = opts[x].otext.getLength()
                 END IF
             END FOR
             FOR x = 1 TO max_options
                 LET actname = SFMT("option%1",x)
-                IF x > options.getLength() THEN
+                IF x > opts.getLength() THEN
                     CALL DIALOG.setActionActive(actname,FALSE)
                     CALL DIALOG.setActionHidden(actname,1)
                     CALL DIALOG.getForm().setElementHidden(actname,1)
@@ -64,16 +64,16 @@ PUBLIC FUNCTION dynmenu(
                 ELSE
                     CALL DIALOG.setActionActive(actname,TRUE)
                     CALL DIALOG.setActionHidden(actname,0)
-                    --CALL DIALOG.setActionText(actname,options[x].name)
+                    --CALL DIALOG.setActionText(actname,opts[x].oname)
                     CALL DIALOG.getForm().setElementHidden(actname,0)
                     IF fn != "dynmenuf90" THEN
-                       LET tmp = COLUMN (ml-options[x].text.getLength()+1), options[x].text
+                       LET tmp = COLUMN (ml-opts[x].otext.getLength()+1), opts[x].otext
                     ELSE
-                       LET tmp = options[x].text
+                       LET tmp = opts[x].otext
                     END IF
                     CALL DIALOG.getForm().setElementText(actname,nn||tmp)
-                    CALL DIALOG.getForm().setElementImage(actname,options[x].icon)
-                    CALL DIALOG.getForm().setElementStyle(actname,options[x].style)
+                    CALL DIALOG.getForm().setElementImage(actname,opts[x].oicon)
+                    CALL DIALOG.getForm().setElementStyle(actname,opts[x].ostyle)
                 END IF
             END FOR
     END MENU
@@ -81,35 +81,35 @@ PUBLIC FUNCTION dynmenu(
     RETURN x
 END FUNCTION
 
-PRIVATE FUNCTION testme(title STRING, options t_dynmenu_option_set)
+PRIVATE FUNCTION testme(mtit STRING, opts t_dynmenu_option_set)
     DEFINE x INTEGER
-    LET x = dynmenu(title,options)
+    LET x = dynmenu(mtit,opts)
     ERROR SFMT("Selected option: %1",x)
 END FUNCTION
 
 FUNCTION main()
     DEFINE x INTEGER
     DEFINE options_1 t_dynmenu_option_set = [
-             (name: "procord", text: "Process Order", icon: "fa-cogs", style:"style1"),
-             (name: "create", text: "Create", icon: "fa-file-o", style:"style1"),
-             (name: "update", text: "Update", icon: "fa-edit", style:"style1"),
-             (name: "delete", text: "Delete", icon: "fa-trash-o", style:"style1"),
-             (name: "delete_all", text: "Delete All", icon: "fa-trash", style:"style1"),
-             (name: "render", text: "Render image", icon: "fa-file-image-o", style:"style1"),
-             (name: "remorph", text: "Remove Orphan Topics", icon: "fa-gears", style:"style1"),
-             (name: "validate", text: "Validate", icon: "fa-check", style:"style1"),
-             (name: "print", text: "Print", icon: "printer", style:"style1"),
-             (name: "cancel", text: "Cancel", icon: "cancel", style:"style1")
+             (oname: "procord",    otext: "Process Order",  oicon: "fa-cogs",         ostyle:"style1"),
+             (oname: "create",     otext: "Create",         oicon: "fa-file-o",       ostyle:"style1"),
+             (oname: "update",     otext: "Update",         oicon: "fa-edit",         ostyle:"style1"),
+             (oname: "delete",     otext: "Delete",         oicon: "fa-trash-o",      ostyle:"style1"),
+             (oname: "delete_all", otext: "Delete All",     oicon: "fa-trash",        ostyle:"style1"),
+             (oname: "render",     otext: "Render image",   oicon: "fa-file-image-o", ostyle:"style1"),
+             (oname: "remorph",    otext: "Remove Orphans", oicon: "fa-gears",        ostyle:"style1"),
+             (oname: "validate",   otext: "Validate",       oicon: "fa-check",        ostyle:"style1"),
+             (oname: "print",      otext: "Print",          oicon: "printer",         ostyle:"style1"),
+             (oname: "cancel",     otext: "Cancel",         oicon: "cancel",          ostyle:"style1")
            ]
     DEFINE options_2 t_dynmenu_option_set = [
-             (name: "person1", icon: "face1-01.svg", style:"style2"),
-             (name: "person2", icon: "face2-01.svg", style:"style2"),
-             (name: "person3", icon: "face3-01.svg", style:"style2"),
-             (name: "person4", icon: "face4-01.svg", style:"style2"),
-             (name: "person5", icon: "face5-01.svg", style:"style2"),
-             (name: "person6", icon: "face6-01.svg", style:"style2"),
-             (name: "person7", icon: "face7-01.svg", style:"style2"),
-             (name: "person8", icon: "face8-01.svg", style:"style2")
+             (oname: "person1", oicon: "face1-01.svg", ostyle:"style2"),
+             (oname: "person2", oicon: "face2-01.svg", ostyle:"style2"),
+             (oname: "person3", oicon: "face3-01.svg", ostyle:"style2"),
+             (oname: "person4", oicon: "face4-01.svg", ostyle:"style2"),
+             (oname: "person5", oicon: "face5-01.svg", ostyle:"style2"),
+             (oname: "person6", oicon: "face6-01.svg", ostyle:"style2"),
+             (oname: "person7", oicon: "face7-01.svg", ostyle:"style2"),
+             (oname: "person8", oicon: "face8-01.svg", ostyle:"style2")
            ]
     DEFINE tmp t_dynmenu_option_set
 
