@@ -11,9 +11,7 @@ display a list of options defined at runtime.
 
 ## Prerequisites
 
-* Genero BDL 4.01+
-* Genero Browser Client 4.01+
-* Genero Desktop Client 4.01+
+* Latest Genero version
 * GNU Make
 
 ## Compilation from command line
